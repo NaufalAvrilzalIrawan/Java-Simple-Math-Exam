@@ -19,7 +19,7 @@ public class DatabaseConnection1 {
     public static Connection getConnection() {
         if (connection == null) {
             try {
-                String url = "jdbc:mysql://localhost:3306/exam_db";
+                String url = "jdbc:mysql://localhost:3306/simple_math_exam";
                 String user = "root";
                 String password = ""; 
                 

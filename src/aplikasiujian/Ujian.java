@@ -4,17 +4,271 @@
  */
 package aplikasiujian;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+
 /**
  *
  * @author user
  */
 public class Ujian extends javax.swing.JFrame {
 
+    // Global variables for exam logic
+    private int categoryId;
+    private String categoryName;
+    private int userId;
+    private String username;
+    private String role;
+    
+    private JLabel[] questionLabels;
+    private JTextField[] answerFields;
+    private int[] correctAnswers = new int[10];
+    private String[] questionTexts = new String[10];
+    
+    private Timer examTimer;
+    private int timeRemaining = 600; // 10 minutes in seconds
+    private LocalDateTime startTime;
+
     /**
-     * Creates new form Ujian
+     * Default constructor (Kept for NetBeans GUI Builder compatibility)
      */
     public Ujian() {
         initComponents();
+        
+        this.setLocationRelativeTo(null);
+    }
+
+    /**
+     * Custom constructor to dynamically load the exam category and user
+     */
+    public Ujian(int categoryId, String categoryName, int userId, String username, String role) {
+        initComponents();
+        
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.userId = userId;
+        this.username = username;
+        this.role = role;
+        System.out.println(userId + " " + username + " " + role);
+        
+        initCustomLogic();
+        this.setLocationRelativeTo(null);
+    }
+
+    /**
+     * Initialize custom logic like arrays, timer, and generating questions
+     */
+    private void initCustomLogic() {
+        questionLabels = new JLabel[]{lblSoal1, lblSoal2, lblSoal3, lblSoal4, lblSoal5, lblSoal6, lblSoal7, lblSoal8, lblSoal9, lblSoal10};
+        answerFields = new JTextField[]{txtJwb1, txtJwb2, txtJwb3, txtJwb4, txtJwb5, txtJwb6, txtJwb7, txtJwb8, txtJwb9, txtJwb10};
+        
+        lblJdl.setText(categoryName.toUpperCase());
+        lblUser.setText("Siswa: " + username);
+        
+        startTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        lblStart.setText("Waktu Mulai: " + startTime.format(formatter));
+        
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitExam();
+            }
+        });
+
+        generateQuestions();
+        startTimer();
+    }
+
+    /**
+     * Generates 10 random math questions based on the selected category
+     */
+    private void generateQuestions() {
+        Random rand = new Random();
+        
+        for (int i = 0; i < 10; i++) {
+            int num1 = 0, num2 = 0, answer = 0;
+            String operator = "";
+            
+            // 1: Addition, 2: Subtraction, 3: Multiplication, 4: Division
+            switch (categoryId) {
+                case 1:
+                    num1 = rand.nextInt(100) + 1;
+                    num2 = rand.nextInt(100) + 1;
+                    answer = num1 + num2;
+                    operator = "+";
+                    break;
+                case 2:
+                    num1 = rand.nextInt(100) + 50;
+                    num2 = rand.nextInt(num1) + 1;
+                    answer = num1 - num2;
+                    operator = "-";
+                    break;
+                case 3:
+                    num1 = rand.nextInt(20) + 1;
+                    num2 = rand.nextInt(20) + 1;
+                    answer = num1 * num2;
+                    operator = "x";
+                    break;
+                case 4:
+                    num2 = rand.nextInt(20) + 1;
+                    answer = rand.nextInt(20) + 1;
+                    num1 = num2 * answer;
+                    operator = "/";
+                    break;
+            }
+            
+            correctAnswers[i] = answer;
+            questionTexts[i] = num1 + " " + operator + " " + num2;
+            questionLabels[i].setText(questionTexts[i]);
+            answerFields[i].setText("");
+        }
+    }
+
+    /**
+     * Starts the 10-minute countdown timer
+     */
+    private void startTimer() {
+        examTimer = new Timer(1000, new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                timeRemaining--;
+                int minutes = timeRemaining / 60;
+                int seconds = timeRemaining % 60;
+                
+                lblTimer.setText(String.format("Timer: %02d:%02d", minutes, seconds));
+                
+                if (timeRemaining <= 0) {
+                    examTimer.stop();
+                    JOptionPane.showMessageDialog(null, "Waktu habis! Jawaban dikumpulkan.");
+                    submitExam();
+                }
+            }
+        });
+        examTimer.start();
+    }
+
+    /**
+     * Validates answers, calculates score, and saves to the database
+     */
+    private void submitExam() {
+        examTimer.stop();
+        btnSubmit.setEnabled(false);
+        
+        int correctCount = 0;
+        int[] studentAnswers = new int[10];
+        boolean[] isCorrectArray = new boolean[10];
+        
+        for (int i = 0; i < 10; i++) {
+            int studentAns = 0;
+            try {
+                if (!answerFields[i].getText().trim().isEmpty()) {
+                    studentAns = Integer.parseInt(answerFields[i].getText().trim());
+                }
+            } catch (NumberFormatException ex) {
+                // Ignore invalid inputs (treat as 0/wrong)
+            }
+            
+            studentAnswers[i] = studentAns;
+            
+            if (studentAns == correctAnswers[i]) {
+                correctCount++;
+                isCorrectArray[i] = true;
+            } else {
+                isCorrectArray[i] = false;
+            }
+        }
+        
+        int finalScore = correctCount * 10; // Total 100
+        LocalDateTime endTime = LocalDateTime.now();
+        int durationSeconds = 600 - timeRemaining; 
+        
+        saveToDatabase(finalScore, endTime, durationSeconds, studentAnswers, isCorrectArray);
+    }
+
+    /**
+     * Saves the final score to exam_results and specific questions to exam_details
+     */
+    private void saveToDatabase(int finalScore, LocalDateTime endTime, int durationSeconds, int[] studentAnswers, boolean[] isCorrectArray) {
+        Connection conn = null;
+        PreparedStatement pstResult = null;
+        PreparedStatement pstDetail = null;
+        ResultSet rsKeys = null;
+        System.out.println("User ID: " + userId + " Category ID: " + categoryId);
+        
+        try {
+            conn = DatabaseConnection1.getConnection();
+            conn.setAutoCommit(false);
+            
+            String sqlResult = "INSERT INTO exam_results (user_id, category_id, score, total_questions, exam_date, start_time, end_time, duration_seconds) "
+                             + "VALUES (?, ?, ?, 10, CURRENT_DATE, ?, ?, ?)";
+            
+            pstResult = conn.prepareStatement(sqlResult, Statement.RETURN_GENERATED_KEYS);
+            pstResult.setInt(1, userId);
+            pstResult.setInt(2, categoryId);
+            pstResult.setInt(3, finalScore);
+            pstResult.setObject(4, startTime);
+            pstResult.setObject(5, endTime);
+            pstResult.setInt(6, durationSeconds);
+            
+            pstResult.executeUpdate();
+            
+            rsKeys = pstResult.getGeneratedKeys();
+            int examResultId = 0;
+            if (rsKeys.next()) {
+                examResultId = rsKeys.getInt(1);
+            }
+
+            String sqlDetail = "INSERT INTO exam_details (exam_result_id, question_text, student_answer, correct_answer, is_correct) "
+                             + "VALUES (?, ?, ?, ?, ?)";
+            pstDetail = conn.prepareStatement(sqlDetail);
+            
+            for (int i = 0; i < 10; i++) {
+                pstDetail.setInt(1, examResultId);
+                pstDetail.setString(2, questionTexts[i]);
+                pstDetail.setInt(3, studentAnswers[i]);
+                pstDetail.setInt(4, correctAnswers[i]);
+                pstDetail.setBoolean(5, isCorrectArray[i]);
+                pstDetail.addBatch();
+            }
+            pstDetail.executeBatch();
+            
+            conn.commit();
+            
+            JOptionPane.showMessageDialog(this, "Exam submitted!\nYour Score: " + finalScore);
+            this.dispose();
+            
+            Kategori kategoriForm = new Kategori(userId, username, role);
+            kategoriForm.setVisible(true);
+            System.out.println("Redirecting to Category Menu...");
+            
+        } catch (SQLException ex) {
+            try {
+                if (conn != null) conn.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rsKeys != null) rsKeys.close();
+                if (pstResult != null) pstResult.close();
+                if (pstDetail != null) pstDetail.close();
+                if (conn != null) conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -80,7 +334,7 @@ public class Ujian extends javax.swing.JFrame {
 
         lblUser.setBackground(new java.awt.Color(0, 0, 0));
         lblUser.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblUser.setText("User");
+        lblUser.setText("Siswa");
 
         lblJml.setBackground(new java.awt.Color(0, 0, 0));
         lblJml.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
