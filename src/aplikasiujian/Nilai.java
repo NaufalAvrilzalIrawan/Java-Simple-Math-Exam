@@ -49,8 +49,10 @@ public class Nilai extends javax.swing.JFrame {
         // Update Title based on role
         if(this.role.equalsIgnoreCase("teacher")) {
             lblJdl1.setText("SEMUA SISWA");
+            mnuUji.setVisible(false);
         } else {
             lblJdl1.setText("SISWA: " + this.username.toUpperCase());
+            mnuDas.setVisible(false);
         }
         
         // Load data into the table
@@ -240,6 +242,7 @@ public class Nilai extends javax.swing.JFrame {
         lblJdl = new javax.swing.JLabel();
         lblJdl1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
+        mnuDas = new javax.swing.JMenu();
         mnuUji = new javax.swing.JMenu();
         mnuNil = new javax.swing.JMenu();
         mnuLot = new javax.swing.JMenu();
@@ -332,6 +335,14 @@ public class Nilai extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        mnuDas.setText("Dashboard");
+        mnuDas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuDasMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(mnuDas);
+
         mnuUji.setText("Ujian");
         mnuUji.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -412,6 +423,12 @@ public class Nilai extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_mnuLotMouseClicked
 
+    private void mnuDasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuDasMouseClicked
+        Dashboard dashboard = new Dashboard(userId, username, role);
+        dashboard.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuDasMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -463,6 +480,7 @@ public class Nilai extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblJdl;
     private javax.swing.JLabel lblJdl1;
+    private javax.swing.JMenu mnuDas;
     private javax.swing.JMenu mnuLot;
     private javax.swing.JMenu mnuNil;
     private javax.swing.JMenu mnuUji;

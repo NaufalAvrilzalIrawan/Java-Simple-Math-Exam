@@ -56,10 +56,8 @@ public class Login extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Login berhasil! Halo, " + dbUsername);
                 
                 if (role.equalsIgnoreCase("teacher")) {
-                    /*
-                    Dashboard dashboardForm = new Dashboard(userId, dbUsername);
-                    dashboardForm.setVisible(true);
-                    */
+                    Dashboard dashboard = new Dashboard(userId, dbUsername, role);
+                    dashboard.setVisible(true);
                     System.out.println("Redirecting to Teacher Dashboard...");
                     
                 } else if (role.equalsIgnoreCase("student")) {
@@ -73,7 +71,7 @@ public class Login extends javax.swing.JFrame {
                 
             } else {
                 // Wrong username or password
-                JOptionPane.showMessageDialog(this, "Invalid Username or Password!", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Username atau Password salah!", "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
             
         } catch (SQLException ex) {
