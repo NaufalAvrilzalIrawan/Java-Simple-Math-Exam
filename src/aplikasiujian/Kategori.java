@@ -113,7 +113,7 @@ public class Kategori extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuUji = new javax.swing.JMenu();
         mnuNil = new javax.swing.JMenu();
-        mnuPass = new javax.swing.JMenu();
+        mnuLot = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -122,6 +122,7 @@ public class Kategori extends javax.swing.JFrame {
 
         lblJdl.setBackground(new java.awt.Color(0, 0, 0));
         lblJdl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblJdl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblJdl.setText("KATEGORI UJIAN");
 
         btnAdd.setBackground(new java.awt.Color(204, 0, 0));
@@ -184,10 +185,10 @@ public class Kategori extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(49, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblJdl)
-                .addGap(125, 125, 125))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblJdl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,13 +207,28 @@ public class Kategori extends javax.swing.JFrame {
         );
 
         mnuUji.setText("Ujian");
+        mnuUji.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuUjiMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(mnuUji);
 
         mnuNil.setText("Nilai");
+        mnuNil.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuNilMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(mnuNil);
 
-        mnuPass.setText("Reset Password");
-        jMenuBar1.add(mnuPass);
+        mnuLot.setText("Logout");
+        mnuLot.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuLotMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(mnuLot);
 
         setJMenuBar(jMenuBar1);
 
@@ -253,6 +269,24 @@ public class Kategori extends javax.swing.JFrame {
         examForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnDivActionPerformed
+
+    private void mnuUjiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuUjiMouseClicked
+        Kategori kategoriForm = new Kategori(userId, username, role);
+        kategoriForm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuUjiMouseClicked
+
+    private void mnuNilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuNilMouseClicked
+        Nilai nilai = new Nilai(userId, username, role);
+        nilai.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuNilMouseClicked
+
+    private void mnuLotMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLotMouseClicked
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuLotMouseClicked
 
     /**
      * @param args the command line arguments
@@ -298,8 +332,8 @@ public class Kategori extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblJdl;
+    private javax.swing.JMenu mnuLot;
     private javax.swing.JMenu mnuNil;
-    private javax.swing.JMenu mnuPass;
     private javax.swing.JMenu mnuUji;
     // End of variables declaration//GEN-END:variables
 }

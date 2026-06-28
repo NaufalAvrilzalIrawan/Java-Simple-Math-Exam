@@ -321,7 +321,7 @@ public class Ujian extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuUji = new javax.swing.JMenu();
         mnuNil = new javax.swing.JMenu();
-        mnuPass = new javax.swing.JMenu();
+        mnuLot = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -643,6 +643,7 @@ public class Ujian extends javax.swing.JFrame {
 
         lblJdl.setBackground(new java.awt.Color(0, 0, 0));
         lblJdl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblJdl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblJdl.setText("PENJUMLAHAN");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -652,6 +653,7 @@ public class Ujian extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblJdl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -675,10 +677,6 @@ public class Ujian extends javax.swing.JFrame {
                                     .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 1, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblJdl)
-                .addGap(131, 131, 131))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -711,13 +709,28 @@ public class Ujian extends javax.swing.JFrame {
         );
 
         mnuUji.setText("Ujian");
+        mnuUji.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuUjiMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(mnuUji);
 
         mnuNil.setText("Nilai");
+        mnuNil.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuNilMouseClicked(evt);
+            }
+        });
         jMenuBar1.add(mnuNil);
 
-        mnuPass.setText("Reset Password");
-        jMenuBar1.add(mnuPass);
+        mnuLot.setText("Logout");
+        mnuLot.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mnuLotMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(mnuLot);
 
         setJMenuBar(jMenuBar1);
 
@@ -738,6 +751,24 @@ public class Ujian extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void mnuLotMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuLotMouseClicked
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuLotMouseClicked
+
+    private void mnuUjiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuUjiMouseClicked
+        Kategori kategoriForm = new Kategori(userId, username, role);
+        kategoriForm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuUjiMouseClicked
+
+    private void mnuNilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnuNilMouseClicked
+        Nilai nilai = new Nilai(userId, username, role);
+        nilai.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnuNilMouseClicked
 
     /**
      * @param args the command line arguments
@@ -804,8 +835,8 @@ public class Ujian extends javax.swing.JFrame {
     private javax.swing.JLabel lblStart;
     private javax.swing.JLabel lblTimer;
     private javax.swing.JLabel lblUser;
+    private javax.swing.JMenu mnuLot;
     private javax.swing.JMenu mnuNil;
-    private javax.swing.JMenu mnuPass;
     private javax.swing.JMenu mnuUji;
     private javax.swing.JTextField txtJwb1;
     private javax.swing.JTextField txtJwb10;
