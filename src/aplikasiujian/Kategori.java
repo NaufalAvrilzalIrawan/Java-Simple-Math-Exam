@@ -36,6 +36,8 @@ public class Kategori extends javax.swing.JFrame {
         this.username = username;
         this.role = role;
         System.out.println(userId + " " + username + " " + role);
+        jProgressBar1.setStringPainted(true);
+        jProgressBar1.setForeground(new Color(0, 204, 0));
         checkCompletedCategories();
         this.setLocationRelativeTo(null);
     }
@@ -48,6 +50,8 @@ public class Kategori extends javax.swing.JFrame {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
+        
+        int completedCount = 0; // Counter for completed categories
         
         try {
             conn = DatabaseConnection1.getConnection();
@@ -62,6 +66,7 @@ public class Kategori extends javax.swing.JFrame {
             // Loop through the results and disable corresponding buttons
             while (rs.next()) {
                 int catId = rs.getInt("category_id");
+                completedCount++; // Increment our counter for each completed exam
                 
                 switch (catId) {
                     case 1: // Addition
@@ -83,8 +88,13 @@ public class Kategori extends javax.swing.JFrame {
                 }
             }
             
+            // Update the Progress Bar dynamically based on the completed count
+            int percentage = (int) ((completedCount / 4.0) * 100);
+            jProgressBar1.setValue(percentage);
+            jProgressBar1.setString(completedCount + "/4 Kategori selesai (" + percentage + "%)");
+            
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Failed to load category status:\n" + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Gagal memuat progress:\n" + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -109,6 +119,7 @@ public class Kategori extends javax.swing.JFrame {
         btnMin = new javax.swing.JButton();
         btnTme = new javax.swing.JButton();
         btnDiv = new javax.swing.JButton();
+        jProgressBar1 = new javax.swing.JProgressBar();
         jPanel1 = new javax.swing.JPanel();
         lblJdl = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -170,22 +181,29 @@ public class Kategori extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnTme, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDiv, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnTme, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDiv, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(77, 77, 77)
+                .addGap(42, 42, 42)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -350,6 +368,7 @@ public class Kategori extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JLabel lblJdl;
     private javax.swing.JMenu mnuLot;
     private javax.swing.JMenu mnuNil;

@@ -43,6 +43,7 @@ public class Dashboard extends javax.swing.JFrame {
         this.username = username;
         this.role = role;
         System.out.println("DEBUG Dashboard: " + userId + " " + username + " " + role);
+        lblJdl1.setText("Welcome Back " + username + "!");
         this.setLocationRelativeTo(null);
         
         // Dynamically load student progress from the database
@@ -218,7 +219,7 @@ public class Dashboard extends javax.swing.JFrame {
         lblJdl1.setBackground(new java.awt.Color(0, 0, 0));
         lblJdl1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblJdl1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblJdl1.setText("WELCOME BACK");
+        lblJdl1.setText("Welcome Back");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
